@@ -101,15 +101,26 @@ function build(modeltype::Type{MySimpleOneDimensionalAgentModel}, world::MyOneDi
     rule = data.rule; # rule model
     radius = rule.radius; # radius of the rule model
     index = data.index; # index of the agent
-    connections = Array{Int,1}(undef, radius); # initialize the neighborhood for this agent
+    number_of_flanks = range(1, stop = radius, step = 1) |> collect |> x-> median(x) - 1 |> Int64; # how many flanks do we have?
 
     # compute the connections -
-    if (index == 1) # this is the start of the world
-    elseif (index == width) # this is the end of the world    
+    connections = nothing;
+    if (index - number_of_flanks ≤ 0) # this is the start of the world
+    
+        left_flank = range((width + (index - number_of_flanks)), stop = width, step = 1) |> collect;
+        right_flank = range(1, stop = (index + number_of_flanks), step = 1) |> collect;
+        connections = vcat(left_flank, right_flank);
+
+    elseif (index + number_of_flanks > width) # this is the end of the world    
+    
+        left_flank = range((index - number_of_flanks), stop = width, step = 1) |> collect;
+        right_flank = range(1, stop = (index + number_of_flanks - width), step = 1) |> collect;
+        connections = vcat(left_flank, right_flank);
+
     else # this is the interior of the world
+        connections = range((index - number_of_flanks), stop = (index + number_of_flanks), step = 1) |> collect;
     end
 
- 
     # set the data on the object
     model.index = index;
     model.rule = rule;

@@ -4,6 +4,8 @@ const _PATH_TO_BASE = joinpath(_PATH_TO_ROOT, "base");
 
 # load external packages -
 using JLD2
+using Statistics
+using DataStructures
 
 # load my codes -
 include(joinpath(_PATH_TO_BASE, "Types.jl"));

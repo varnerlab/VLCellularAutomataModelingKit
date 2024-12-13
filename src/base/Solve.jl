@@ -17,7 +17,7 @@ function _execute(agent::MyElementaryWolframRuleModel, frame::Array{Int64,2}, ti
     return rulemodel.rule[index];
 end
 
-function _solve(agents::Array{MySimpleAgentModel,1}, world::MyOneDimensionalPeriodicGridWorld;
+function _solve(agents::Array{MySimpleOneDimensionalAgentModel,1}, world::MyOneDimensionalPeriodicGridWorld;
     initial::Array{Int,2} = Array{Int,2}(), steps::Int=100, verbose::Bool=false)::Dict{Int, Array{Int,2}}
 
     # initialize -
