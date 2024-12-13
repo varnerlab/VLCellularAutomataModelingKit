@@ -41,7 +41,7 @@ function _solve(agents::Array{MySimpleOneDimensionalAgentModel,1}, world::MyOneD
         end
         
         # store the frame -
-        frames[t] = copy(frame);
+        frames[t] = frame; # store the frame
     end
 
     # return -
