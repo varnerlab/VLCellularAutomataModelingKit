@@ -31,13 +31,23 @@ mutable struct MyTotalisticWolframRuleModel <: AbstractPolicyModel
 end
 
 
-mutable struct MySimpleAgentModel <: AbstractAgentModel
+mutable struct MySimpleOneDimensionalAgentModel <: AbstractAgentModel
     
     # data -
     index::Int
     rule::Union{MyElementaryWolframRuleModel, MyTotalisticWolframRuleModel}
-    connections::Dict{Int, Int}
+    connections::Array{Int,1} # which cells are in my neighborhood?
 
     # constructor -
-    MySimpleAgentModel() = new();
+    MySimpleOneDimensionalAgentModel() = new();
+end
+
+mutable struct MyOneDimensionalPeriodicGridWorld <: AbstractWorldModel
+    
+    # data -
+    states::Dict{Int, Int}
+    width::Int
+
+    # constructor -
+    MyOneDimensionalPeriodicGridWorld() = new();
 end

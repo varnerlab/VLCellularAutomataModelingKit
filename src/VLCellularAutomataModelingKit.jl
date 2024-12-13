@@ -6,8 +6,8 @@ module VLCellularAutomataModelingKit
 
     # export -
     export AbstractWorldModel, AbstractAgentModel, AbstractPolicyModel, AbstractLearningModel;
-    export MyElementaryWolframRuleModel, MyTotalisticWolframRuleModel, MySimpleAgentModel;
-    export build
+    export MyElementaryWolframRuleModel, MyTotalisticWolframRuleModel, MySimpleOneDimensionalAgentModel, MyOneDimensionalPeriodicGridWorld;
+    export build, solve;
 
 
 end # module VLCellularAutomataModelingKit

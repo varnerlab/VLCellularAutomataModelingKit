@@ -90,21 +90,50 @@ function build(modeltype::Type{MyTotalisticWolframRuleModel},
     return model;
 end
 
-function build(modeltype::Type{MySimpleAgentModel}, 
-    data::NamedTuple)::MySimpleAgentModel
+function build(modeltype::Type{MySimpleOneDimensionalAgentModel}, world::MyOneDimensionalPeriodicGridWorld,
+    data::NamedTuple)::MySimpleOneDimensionalAgentModel
     
-    # initialize -
-    index = data.index;
-    rule = data.rule;
-    connections = data.connections;
-
-    # create instance, and storage for the model components that we are going to build
+    # create and empty instance. We'll fill this in with the data that we have
     model = modeltype();
+
+    # get the data required to build the model
+    width = world.width; # width of the world
+    rule = data.rule; # rule model
+    radius = rule.radius; # radius of the rule model
+    index = data.index; # index of the agent
+    connections = Array{Int,1}(undef, radius); # initialize the neighborhood for this agent
+
+    # compute the connections -
+    if (index == 1) # this is the start of the world
+    elseif (index == width) # this is the end of the world    
+    else # this is the interior of the world
+    end
+
  
     # set the data on the object
     model.index = index;
     model.rule = rule;
     model.connections = connections;
+
+    # return
+    return model;
+end
+
+function build(modeltype::Type{MyOneDimensionalPeriodicGridWorld}, data::NamedTuple)::MyOneDimensionalPeriodicGridWorld
+    
+    # initialize -
+    width = data.width # 1d world with 1 agent per grid cell
+
+    # create instance, and storage for the model components that we are going to build
+    model = modeltype();
+    states = Dict{Int, Int}();
+    for i ∈ 1:width
+        states[i] = i;
+    end
+
+    # set the data on the object
+    model.states = states;
+    model.width = width;
 
     # return
     return model;
