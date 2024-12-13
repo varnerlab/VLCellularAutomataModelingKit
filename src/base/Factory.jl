@@ -89,3 +89,23 @@ function build(modeltype::Type{MyTotalisticWolframRuleModel},
     # return
     return model;
 end
+
+function build(modeltype::Type{MySimpleAgentModel}, 
+    data::NamedTuple)::MySimpleAgentModel
+    
+    # initialize -
+    index = data.index;
+    rule = data.rule;
+    connections = data.connections;
+
+    # create instance, and storage for the model components that we are going to build
+    model = modeltype();
+ 
+    # set the data on the object
+    model.index = index;
+    model.rule = rule;
+    model.connections = connections;
+
+    # return
+    return model;
+end
