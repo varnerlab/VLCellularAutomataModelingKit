@@ -1,12 +1,13 @@
-module VLCelluarAutomataModelingKit
+module VLCellularAutomataModelingKit
+
 
     # include -
-    include("Include.jl")
+    include("Include.jl");
 
     # export -
-    export AbstractPolicyModel, AbstractLearningModel, AbstractWorldModel, AbstractAgentModel
-    export MyElementaryWolframRuleModel, MyTotalisticWolframRuleModel, MySimpleAgentModel
+    export AbstractWorldModel, AbstractAgentModel, AbstractPolicyModel, AbstractLearningModel;
+    export MyElementaryWolframRuleModel, MyTotalisticWolframRuleModel, MySimpleAgentModel;
     export build
 
 
-end
+end # module VLCellularAutomataModelingKit
