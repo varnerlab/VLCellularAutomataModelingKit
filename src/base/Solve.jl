@@ -9,7 +9,7 @@ function _execute(agent::MySimpleOneDimensionalAgentModel, frame::Array{Int64,2}
 
     tmp = Array{Int64,1}(undef, radius); # initialize the neighborhood
     for i ∈ 1:radius
-        tmp[i] = frame[time, connections[i]]; # get the neighborhood
+        tmp[i] = frame[time-1, connections[i]]; # get the neighborhood
     end
     index = parse(Int, join(tmp), base = number_of_colors);
 
