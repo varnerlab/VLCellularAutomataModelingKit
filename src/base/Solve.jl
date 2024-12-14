@@ -1,5 +1,5 @@
 
-function _execute(agent::MyElementaryWolframRuleModel, frame::Array{Int64,2}, time::Int64)::Int64
+function _execute(agent::MySimpleOneDimensionalAgentModel, frame::Array{Int64,2}, time::Int64)::Int64
 
     # get the data -
     connections = agent.connections; # what are the connections of the agent? (neighborhood)
