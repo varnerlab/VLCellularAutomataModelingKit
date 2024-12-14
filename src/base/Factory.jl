@@ -52,10 +52,11 @@ function build(modeltype::Type{MyElementaryWolframRuleModel}, data::NamedTuple):
     return model;
 end
 
-function build(modeltype::Type{MyTotalisticWolframRuleModel}, 
+function build(modeltype::Type{MyTotalisticWolframRuleModel},
     data::NamedTuple)::MyTotalisticWolframRuleModel
     
     # initialize -
+    width = world.width;
     index = data.index;
     levels = data.colors;
     radius = data.radius;
@@ -77,6 +78,7 @@ function build(modeltype::Type{MyTotalisticWolframRuleModel},
     for i ∈ eachindex(values)
         Q[round(values[i], digits=2)] = (i - 1);
     end
+
     
     # set the data on the object
     model.index = index;
