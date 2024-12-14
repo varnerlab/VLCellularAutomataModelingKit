@@ -34,10 +34,10 @@ function _solve(agents::Array{MySimpleOneDimensionalAgentModel,1}, world::MyOneD
         for i ∈ eachindex(agents) # for each agent
             
             # get the agent, and data from the agent
-            agents = agents[i]; # which agent are we dealing with?
+            agent = agents[i]; # which agent are we dealing with?
             
             # compute the new state for this agent -
-            frame[t,i] = _execute(agents, frame, t); # update the state of the agent
+            frame[t,i] = _execute(agent, frame, t); # update the state of the agent
         end
         
         # store the frame -
