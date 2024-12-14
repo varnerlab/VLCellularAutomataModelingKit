@@ -25,7 +25,7 @@ function _solve(agents::Array{MySimpleOneDimensionalAgentModel,1}, world::MyOneD
     frames[0] = copy(initial); # initial frame
 
     # iterate over time -
-    for t ∈ 1:steps
+    for t ∈ 2:steps
         
         # initialize -
         frame = copy(frames[t-1]); # get the frame from the previous step
