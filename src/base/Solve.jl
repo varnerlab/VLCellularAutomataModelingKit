@@ -22,7 +22,7 @@ function _solve(agents::Array{MySimpleOneDimensionalAgentModel,1}, world::MyOneD
 
     # initialize -
     frames = Dict{Int, Array{Int, 2}}(); # storage for the simulation frames
-    frames[0] = copy(initial); # initial frame
+    frames[1] = copy(initial); # initial frame
 
     # iterate over time -
     for t ∈ 2:steps
