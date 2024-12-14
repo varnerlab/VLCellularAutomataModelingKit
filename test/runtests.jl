@@ -1,6 +1,6 @@
-using VLCelluarAutomataModelingKit
+using VLCellularAutomataModelingKit
 using Test
 
-@testset "VLCelluarAutomataModelingKit.jl" begin
-    # Write your tests here.
+@testset "VLCellularAutomataModelingKit.jl" begin
+    @test true
 end

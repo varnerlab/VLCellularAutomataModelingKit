@@ -6,6 +6,7 @@ const _PATH_TO_BASE = joinpath(_PATH_TO_ROOT, "base");
 using JLD2
 using Statistics
 using DataStructures
+using Test
 
 # load my codes -
 include(joinpath(_PATH_TO_BASE, "Types.jl"));

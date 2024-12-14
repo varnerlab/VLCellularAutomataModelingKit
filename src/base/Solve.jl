@@ -48,9 +48,9 @@ function _solve(agents::Array{MySimpleOneDimensionalAgentModel,1}, world::MyOneD
     return frames;
 end
 
-function solve(agents::Array{AbstractAgentModel,1}, 
+function solve(agents::Array{T,1}, 
     world::AbstractWorldModel; initial::Array{Int,2}=Array{Int,2}(),
-    steps::Int=100, verbose::Bool=false)::Dict{Int, Any}
+    steps::Int=100, verbose::Bool=false)::Dict{Int, Array{Int64,2}} where T<:AbstractAgentModel
 
     # call the appropriate function -
     return _solve(agents, world, initial=initial, steps=steps, verbose=verbose);

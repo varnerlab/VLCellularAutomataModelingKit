@@ -24,8 +24,7 @@ function _build(modeltype::Type{T}, data::NamedTuple) where T <: Union{AbstractW
 end
 
 
-function build(modeltype::Type{MyElementaryWolframRuleModel}, 
-    data::NamedTuple)::MyElementaryWolframRuleModel
+function build(modeltype::Type{MyElementaryWolframRuleModel}, data::NamedTuple)::MyElementaryWolframRuleModel
 
     # initialize -
     index = data.index;
@@ -98,9 +97,9 @@ function build(modeltype::Type{MySimpleOneDimensionalAgentModel}, world::MyOneDi
 
     # get the data required to build the model
     width = world.width; # width of the world
+    index = data.index; # index of the agent
     rule = data.rule; # rule model
     radius = rule.radius; # radius of the rule model
-    index = data.index; # index of the agent
     number_of_flanks = range(1, stop = radius, step = 1) |> collect |> x-> median(x) - 1 |> Int64; # how many flanks do we have?
 
     # compute the connections -
