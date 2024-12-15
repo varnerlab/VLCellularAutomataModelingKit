@@ -162,7 +162,8 @@ function build(modeltype::Type{MySimpleTwoDimensionalAgentModel}, world::MyTwoDi
     width = world.width; # width of the world
     height = world.height; # height of the world
     index = data.index; # index of the agent
-    radius = data.rule.radius; # rule model
+    rule = data.rule # rule model
+    radius = rule.radius; # radius of the rule model
     myposition = world.states[index]; # what is my position in the world?
 
     coordinates = world.coordinates; # coordinates of the world
