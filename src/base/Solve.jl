@@ -11,8 +11,15 @@ function _execute(agent::MySimpleOneDimensionalAgentModel, frame::Array{Int64,2}
     for i ∈ 1:radius
         tmp[i] = frame[time, connections[i]]; # get the neighborhood
     end
-    index = parse(Int, join(tmp), base = number_of_colors);
 
+    # not clever ... but it works
+    index = nothing;
+    if rulemodel isa MyElementaryWolframRuleModel
+        index = parse(Int, join(tmp), base = number_of_colors);
+    elseif rulemodel isa MyTotalisticWolframRuleModel
+        index = Q[round(mean(tmp), digits=2)]
+    end
+    
     # return the next state 
     return rulemodel.rule[index];
 end
