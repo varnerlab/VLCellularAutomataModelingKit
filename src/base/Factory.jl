@@ -165,6 +165,8 @@ function build(modeltype::Type{MySimpleTwoDimensionalAgentModel}, world::MyTwoDi
     radius = data.rule.radius; # rule model
     myposition = world.states[index]; # what is my position in the world?
 
+    coordinates = world.coordinates; # coordinates of the world
+
     # setup the moves - 
     moves = Dict{Int, Tuple{Int,Int}}();
     moves[1] = (-1,0); # up
@@ -185,8 +187,13 @@ function build(modeltype::Type{MySimpleTwoDimensionalAgentModel}, world::MyTwoDi
         for i ∈ 1:radius
             Δ = moves[i]; # get the move 
             newposition = myposition .+ Δ; # new position
-            newindex = world.coordinates[newposition]; # what is the index of this new position?
-            connections[i] = newindex; # set the connection
+
+            if (haskey(coordinates, newposition) == true)
+                newindex = world.coordinates[newposition]; # what is the index of this new position?
+                connections[i] = newindex; # set the connection 
+            else
+                connections[i] = -1; # set the connection to -1
+            end
         end
 
     else
