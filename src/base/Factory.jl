@@ -56,7 +56,6 @@ function build(modeltype::Type{MyTotalisticWolframRuleModel},
     data::NamedTuple)::MyTotalisticWolframRuleModel
     
     # initialize -
-    width = world.width;
     index = data.index;
     levels = data.colors;
     radius = data.radius;
