@@ -202,8 +202,8 @@ function build(modeltype::Type{MySimpleTwoDimensionalAgentModel}, world::MyTwoDi
 
     # set data on the model -
     model.index = index;
-    model.rule = data.rule;
-    model.connections = data.connections;
+    model.rule = rule;
+    model.connections = connections;
 
     # return
     return model;
