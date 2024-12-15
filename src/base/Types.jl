@@ -30,6 +30,16 @@ mutable struct MyTotalisticWolframRuleModel <: AbstractPolicyModel
     MyTotalisticWolframRuleModel() = new();
 end
 
+mutable struct MySimpleTwoDimensionalAgentModel <: AbstractAgentModel
+    
+    # data -
+    index::Int
+    rule::Union{MyElementaryWolframRuleModel, MyTotalisticWolframRuleModel}
+    connections::Array{Int,1} # which cells are in my neighborhood?
+
+    # constructor -
+    MySimpleTwoDimensionalAgentModel() = new();
+end
 
 mutable struct MySimpleOneDimensionalAgentModel <: AbstractAgentModel
     
@@ -50,4 +60,16 @@ mutable struct MyOneDimensionalPeriodicGridWorld <: AbstractWorldModel
 
     # constructor -
     MyOneDimensionalPeriodicGridWorld() = new();
+end
+
+mutable struct MyTwoDimensionalFixedBoundaryGridWorld <: AbstractWorldModel
+    
+    # data -
+    states::Dict{Int, Tuple{Int, Int}}
+    coordinates::Dict{Tuple{Int, Int}, Int}
+    width::Int
+    height::Int
+
+    # constructor -
+    MyTwoDimensionalFixedBoundaryGridWorld() = new();
 end

@@ -23,7 +23,7 @@ function _build(modeltype::Type{T}, data::NamedTuple) where T <: Union{AbstractW
     return model
 end
 
-
+# -- policy models below here --------------------------------------------------------------------------------------------------- #
 function build(modeltype::Type{MyElementaryWolframRuleModel}, data::NamedTuple)::MyElementaryWolframRuleModel
 
     # initialize -
@@ -52,8 +52,7 @@ function build(modeltype::Type{MyElementaryWolframRuleModel}, data::NamedTuple):
     return model;
 end
 
-function build(modeltype::Type{MyTotalisticWolframRuleModel},
-    data::NamedTuple)::MyTotalisticWolframRuleModel
+function build(modeltype::Type{MyTotalisticWolframRuleModel}, data::NamedTuple)::MyTotalisticWolframRuleModel
     
     # initialize -
     index = data.index;
@@ -89,7 +88,9 @@ function build(modeltype::Type{MyTotalisticWolframRuleModel},
     # return
     return model;
 end
+# -- policy models above here --------------------------------------------------------------------------------------------------- #
 
+# -- one dimensional models below here ------------------------------------------------------------------------------------------ #
 function build(modeltype::Type{MySimpleOneDimensionalAgentModel}, world::MyOneDimensionalPeriodicGridWorld,
     data::NamedTuple)::MySimpleOneDimensionalAgentModel
     
@@ -149,3 +150,91 @@ function build(modeltype::Type{MyOneDimensionalPeriodicGridWorld}, data::NamedTu
     # return
     return model;
 end
+# -- one dimensional models above here ------------------------------------------------------------------------------------------ #
+
+# -- two dimensional models below here ------------------------------------------------------------------------------------------ #
+function build(modeltype::Type{MySimpleTwoDimensionalAgentModel}, world::MyTwoDimensionalFixedBoundaryGridWorld, data::NamedTuple)::MySimpleTwoDimensionalAgentModel
+    
+    # create and empty instance. We'll fill this in with the data that we have
+    model = modeltype();
+    
+    # get the data required to build the model -
+    width = world.width; # width of the world
+    height = world.height; # height of the world
+    index = data.index; # index of the agent
+    radius = data.rule.radius; # rule model
+    myposition = world.states[index]; # what is my position in the world?
+
+    # setup the moves - 
+    moves = Dict{Int, Tuple{Int,Int}}();
+    moves[1] = (-1,0); # up
+    moves[2] = (1,0); # down
+    moves[3] = (0,-1); # left
+    moves[4] = (0,1); # right
+    moves[5] = (-1,-1); # up-left
+    moves[6] = (-1,1); # up-right
+    moves[7] = (1,-1); # down-left
+    moves[8] = (1,1); # down-right
+
+    # check: radius can only be 4 or 8, or custom connections
+    connections = nothing;
+    if radius == 4 || radius == 8
+        connections = Array{Int,1}(undef, radius); # setup the connections - which cells are in my neighborhood?
+        
+        # setup the connections -
+        for i ∈ 1:radius
+            Δ = moves[i]; # get the move 
+            newposition = myposition .+ Δ; # new position
+            newindex = world.coordinates[newposition]; # what is the index of this new position?
+            connections[i] = newindex; # set the connection
+        end
+
+    else
+        throw(ArgumentError("Automatic neighborhood generation is supported for radius = {4 | 8}. Otherwise, specify the connections manually."))
+    end
+
+    # set data on the model -
+    model.index = index;
+    model.rule = data.rule;
+    model.connections = data.connections;
+
+    # return
+    return model;
+end
+
+function build(modeltype::Type{MyTwoDimensionalFixedBoundaryGridWorld}, data::NamedTuple)::MyTwoDimensionalFixedBoundaryGridWorld
+    
+    # initialize -
+    model = modeltype();
+    states = Dict{Int, Tuple{Int,Int}}()
+    coordinates = Dict{Tuple{Int,Int},Int}()
+
+    # get stuff from the data
+    width = data.width;
+    height = data.height;
+
+    # build all the stuff 
+    position_index = 1;
+    for i ∈ 1:height # rows
+        for j ∈ 1:width # cols
+            
+            # capture this corrdinate information -
+            coordinate = (i,j);
+            states[position_index] = coordinate;
+            coordinates[coordinate] = position_index;
+
+            # update position_index -
+            position_index += 1;
+        end
+    end
+
+    # set the data on the model -
+    model.width = width;
+    model.height = height;
+    model.states = states;
+    model.coordinates = coordinates;
+
+    # return
+    return model;
+end
+# -- two dimensional models above here ------------------------------------------------------------------------------------------ #
