@@ -17,6 +17,7 @@ function _execute(agent::MySimpleOneDimensionalAgentModel, frame::Array{Int64,2}
     if rulemodel isa MyElementaryWolframRuleModel
         index = parse(Int, join(tmp), base = number_of_colors);
     elseif rulemodel isa MyTotalisticWolframRuleModel
+        Q = rulemodel.neighborhoodstatesmap;
         index = Q[round(mean(tmp), digits=2)]
     end
     
