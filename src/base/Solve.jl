@@ -78,7 +78,7 @@ function _solve(agents::Array{MySimpleOneDimensionalAgentModel,1}, world::MyOneD
         for i ∈ eachindex(agents) # for each agent
 
             # check: is the agent in the exclusion list?
-            if (i ∈ exclude == false)
+            if (∈(i, exclude) == false)
                 
                 # this agent can be updated -
                 # get the agent, and data from the agent
