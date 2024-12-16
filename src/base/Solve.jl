@@ -57,11 +57,16 @@ end
 
 function _solve(agents::Array{MySimpleOneDimensionalAgentModel,1}, world::MyOneDimensionalPeriodicGridWorld;
     initial::Array{Int,2} = Array{Int,2}(), steps::Int=100, verbose::Bool=false, 
-    exclude::Set{Int64} = Set{Int64}())::Dict{Int, Array{Int,2}}
+    exclude::Union{Nothing, Set{Int64}} = nothing)::Dict{Int, Array{Int,2}}
 
     # initialize -
     frames = Dict{Int, Array{Int, 2}}(); # storage for the simulation frames
     frames[1] = copy(initial); # initial frame
+
+    # check: is the exclusion list defined?
+    if (exclude === nothing)
+        exclude = Set{Int64}(); # initialize the exclusion list to empty if not defined
+    end
 
     # iterate over time -
     for t ∈ 2:steps
@@ -73,7 +78,7 @@ function _solve(agents::Array{MySimpleOneDimensionalAgentModel,1}, world::MyOneD
         for i ∈ eachindex(agents) # for each agent
 
             # check: is the agent in the exclusion list?
-            if (isempty(exclude) == false && i ∈ exclude == false)
+            if (i ∈ exclude == false)
                 
                 # this agent can be updated -
                 # get the agent, and data from the agent
@@ -98,7 +103,7 @@ end
 
 function _solve(agents::Array{MySimpleTwoDimensionalAgentModel,1}, world::MyTwoDimensionalFixedBoundaryGridWorld;
     initial::Array{Int,2} = Array{Int,2}(), steps::Int=100, verbose::Bool=false, 
-    exclude::Set{Tuple{Int64,Int64}} = Set{Tuple{Int64,Int64}}())::Dict{Int, Array{Int,2}}
+    exclude::Union{Nothing, Set{Tuple{Int64,Int64}}} = nothing)::Dict{Int, Array{Int,2}}
 
     # initialize -
     frames = Dict{Int, Array{Int, 2}}(); # storage for the simulation frames
@@ -107,6 +112,11 @@ function _solve(agents::Array{MySimpleTwoDimensionalAgentModel,1}, world::MyTwoD
     height = world.height; # height of the world
     states = world.states; # states of the world
     coordinates = world.coordinates; # coordinates of the world
+
+    # check: is the exclusion list defined?
+    if (exclude === nothing)
+        exclude = Set{Tuple{Int64,Int64}}(); # initialize the exclusion list to empty if not defined
+    end
 
     # iterate over time -
     for t ∈ 2:steps
@@ -119,7 +129,7 @@ function _solve(agents::Array{MySimpleTwoDimensionalAgentModel,1}, world::MyTwoD
             for col ∈ (2:width-1)
 
                 coordinate = (row, col);
-                if (isempty(exclude) == false && coordinate ∈ exclude == false)
+                if (coordinate ∈ exclude == false)
                     agent_index = coordinates[coordinate];
                     next_state = _execute(agents[agent_index], current_frame, world);
                     next_frame[row, col] = next_state;
@@ -137,9 +147,9 @@ end
 
 function solve(agents::Array{T,1}, 
     world::AbstractWorldModel; initial::Array{Int,2}=Array{Int,2}(),
-    steps::Int=100, verbose::Bool=false, 
-    exclude::Set{Any} = Set{Int64}())::Dict{Int, Array{Int64,2}} where T<:AbstractAgentModel
+    steps::Int = 100, verbose::Bool = false, exclude = nothing)::Dict{Int, Array{Int64,2}} where T<:AbstractAgentModel
 
     # call the appropriate function -
-    return _solve(agents, world, initial=initial, steps=steps, verbose=verbose, exclude=exclude);
+    return _solve(agents, world, initial = initial, steps = steps, 
+        verbose = verbose, exclude = exclude);
 end
