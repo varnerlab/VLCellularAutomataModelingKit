@@ -129,8 +129,7 @@ function _solve(agents::Array{MySimpleTwoDimensionalAgentModel,1}, world::MyTwoD
             for col ∈ (2:width-1)
 
                 coordinate = (row, col);
-                if (true)
-                    @show ∈(coordinate, exclude) == false
+                if (∈(coordinate, exclude) == false)
                     agent_index = coordinates[coordinate];
                     next_state = _execute(agents[agent_index], current_frame, world);
                     next_frame[row, col] = next_state;
