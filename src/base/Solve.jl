@@ -138,7 +138,7 @@ end
 function solve(agents::Array{T,1}, 
     world::AbstractWorldModel; initial::Array{Int,2}=Array{Int,2}(),
     steps::Int=100, verbose::Bool=false, 
-    exclude::Union{Set{Int64}, Set{Tuple{Int64,Int64}}} = nothing)::Dict{Int, Array{Int64,2}} where T<:AbstractAgentModel
+    exclude::Set{Any} = Set{Int64}())::Dict{Int, Array{Int64,2}} where T<:AbstractAgentModel
 
     # call the appropriate function -
     return _solve(agents, world, initial=initial, steps=steps, verbose=verbose, exclude=exclude);
