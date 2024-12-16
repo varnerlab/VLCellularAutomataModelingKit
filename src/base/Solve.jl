@@ -73,7 +73,7 @@ function _solve(agents::Array{MySimpleOneDimensionalAgentModel,1}, world::MyOneD
         for i ∈ eachindex(agents) # for each agent
 
             # check: is the agent in the exclusion list?
-            if (exclude !== nothing && i ∈ exclude == false)
+            if (exclude === nothing && i ∈ exclude == false)
                 
                 # this agent can be updated -
                 # get the agent, and data from the agent
@@ -119,7 +119,7 @@ function _solve(agents::Array{MySimpleTwoDimensionalAgentModel,1}, world::MyTwoD
             for col ∈ (2:width-1)
 
                 coordinate = (row, col);
-                if (exclude !== nothing && coordinate ∈ exclude == false)
+                if (exclude === nothing && coordinate ∈ exclude == false)
                     agent_index = coordinates[coordinate];
                     next_state = _execute(agents[agent_index], current_frame, world);
                     next_frame[row, col] = next_state;
