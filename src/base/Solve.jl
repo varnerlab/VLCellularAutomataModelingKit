@@ -56,7 +56,8 @@ function _execute(agent::MySimpleTwoDimensionalAgentModel, frame::Array{Int64,2}
 end
 
 function _solve(agents::Array{MySimpleOneDimensionalAgentModel,1}, world::MyOneDimensionalPeriodicGridWorld;
-    initial::Array{Int,2} = Array{Int,2}(), steps::Int=100, verbose::Bool=false)::Dict{Int, Array{Int,2}}
+    initial::Array{Int,2} = Array{Int,2}(), steps::Int=100, verbose::Bool=false, 
+    exclude::Union{Nothing, Set{Int64}, Set{Tuple{Int64,Int64}}} = nothing)::Dict{Int, Array{Int,2}}
 
     # initialize -
     frames = Dict{Int, Array{Int, 2}}(); # storage for the simulation frames
@@ -70,12 +71,21 @@ function _solve(agents::Array{MySimpleOneDimensionalAgentModel,1}, world::MyOneD
         
         # iterate over the agents -
         for i ∈ eachindex(agents) # for each agent
+
+            # check: is the agent in the exclusion list?
+            if (exclude !== nothing && i ∈ exclude == false)
+                
+                # this agent can be updated -
+                # get the agent, and data from the agent
+                agent = agents[i]; # which agent are we dealing with?
             
-            # get the agent, and data from the agent
-            agent = agents[i]; # which agent are we dealing with?
-            
-            # compute the new state for this agent -
-            frame[t,i] = _execute(agent, frame, t - 1); # update the state of the agent
+                # compute the new state for this agent -
+                frame[t,i] = _execute(agent, frame, t - 1); # update the state of the agent
+            else
+                
+                # this agent cannot be updated -
+                frame[t,i] = frame[t-1,i]; # keep the state of the agent the same
+            end
         end
         
         # store the frame -
@@ -87,7 +97,8 @@ function _solve(agents::Array{MySimpleOneDimensionalAgentModel,1}, world::MyOneD
 end
 
 function _solve(agents::Array{MySimpleTwoDimensionalAgentModel,1}, world::MyTwoDimensionalFixedBoundaryGridWorld;
-    initial::Array{Int,2} = Array{Int,2}(), steps::Int=100, verbose::Bool=false)::Dict{Int, Array{Int,2}}
+    initial::Array{Int,2} = Array{Int,2}(), steps::Int=100, verbose::Bool=false, 
+    exclude::Union{Nothing, Set{Int64}, Set{Tuple{Int64,Int64}}} = nothing)::Dict{Int, Array{Int,2}}
 
     # initialize -
     frames = Dict{Int, Array{Int, 2}}(); # storage for the simulation frames
@@ -107,12 +118,14 @@ function _solve(agents::Array{MySimpleTwoDimensionalAgentModel,1}, world::MyTwoD
         for row ∈ 2:(height-1)
             for col ∈ (2:width-1)
 
-                # what is the index of the agent?
-                agent_index = coordinates[(row, col)];
-                next_state = _execute(agents[agent_index], current_frame, world);
-
-                # update the state of the agent
-                next_frame[row, col] = next_state;
+                coordinate = (row, col);
+                if (exclude !== nothing && coordinate ∈ exclude == false)
+                    agent_index = coordinates[coordinate];
+                    next_state = _execute(agents[agent_index], current_frame, world);
+                    next_frame[row, col] = next_state;
+                else
+                    next_frame[row, col] = current_frame[row, col];
+                end
             end
         end
         frames[t] = next_frame; # store the frame
@@ -124,7 +137,8 @@ end
 
 function solve(agents::Array{T,1}, 
     world::AbstractWorldModel; initial::Array{Int,2}=Array{Int,2}(),
-    steps::Int=100, verbose::Bool=false)::Dict{Int, Array{Int64,2}} where T<:AbstractAgentModel
+    steps::Int=100, verbose::Bool=false, 
+    exclude::Union{Nothing, Set{Int64}, Set{Tuple{Int64,Int64}}} = nothing)::Dict{Int, Array{Int64,2}} where T<:AbstractAgentModel
 
     # call the appropriate function -
     return _solve(agents, world, initial=initial, steps=steps, verbose=verbose);
