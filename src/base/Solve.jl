@@ -1,13 +1,14 @@
 
-function _execute(agent::MySimpleOneDimensionalAgentModel, frame::Array{Int64,2}, time::Int64)::Int64
+function _execute(agent::MySimpleOneDimensionalAgentModel, frame::Array{Int,2}, time::Int64)::Int64
 
     # get the data -
     connections = agent.connections; # what are the connections of the agent? (neighborhood)
     rulemodel = agent.rule; # what is the rule model of the agent?
+    w = rulemodel.weights; # what are the weights of the rule model?
     radius = rulemodel.radius; # what is the radius of the rule model?
     number_of_colors = rulemodel.colors; # what is the number of colors in the rule model?
 
-    tmp = Array{Int64,1}(undef, radius); # initialize the neighborhood
+    tmp = Array{Int,1}(undef, radius); # initialize the neighborhood
     for i ∈ 1:radius
         tmp[i] = frame[time, connections[i]]; # get the neighborhood
     end
@@ -18,24 +19,27 @@ function _execute(agent::MySimpleOneDimensionalAgentModel, frame::Array{Int64,2}
         index = parse(Int, join(tmp), base = number_of_colors);
     elseif rulemodel isa MyTotalisticWolframRuleModel
         Q = rulemodel.neighborhoodstatesmap;
-        index = Q[round(mean(tmp), digits=2)]
+        μ = dot(w, tmp);
+        index = Q[round(μ, digits=2)]
     end
     
     # return the next state 
     return rulemodel.rule[index];
 end
 
-function _execute(agent::MySimpleTwoDimensionalAgentModel, frame::Array{Int64,2}, 
+function _execute(agent::MySimpleTwoDimensionalAgentModel, frame::Array{Int,2}, 
     world::MyTwoDimensionalFixedBoundaryGridWorld)::Int64
 
     # get the data -
     connections = agent.connections; # what are the connections of the agent? (neighborhood)
     rulemodel = agent.rule; # what is the rule model of the agent?
+    w = rulemodel.weights; # what are the weights of the rule model?
     radius = rulemodel.radius; # what is the radius of the rule model?
     number_of_colors = rulemodel.colors; # what is the number of colors in the rule model?
     states = world.states; # states of the world
 
-    tmp = Array{Int64,1}(undef, radius); # initialize the neighborhood
+
+    tmp = Array{Int,1}(undef, radius); # initialize the neighborhood
     for i ∈ 1:radius
         j = connections[i]; # get the connection (this is a linear index)
         position = states[j]; # get the position of the connection
@@ -48,7 +52,8 @@ function _execute(agent::MySimpleTwoDimensionalAgentModel, frame::Array{Int64,2}
         index = parse(Int, join(tmp), base = number_of_colors);
     elseif rulemodel isa MyTotalisticWolframRuleModel
         Q = rulemodel.neighborhoodstatesmap;  
-        index = Q[round(mean(tmp), digits=2)]
+        μ = dot(w, tmp);
+        index = Q[round(μ, digits=2)]
     end
     
     # return the next state 
@@ -57,7 +62,7 @@ end
 
 function _solve(agents::Array{MySimpleOneDimensionalAgentModel,1}, world::MyOneDimensionalPeriodicGridWorld;
     initial::Array{Int,2} = Array{Int,2}(), steps::Int=100, verbose::Bool=false, 
-    exclude::Union{Nothing, Set{Int64}} = nothing)::Dict{Int, Array{Int,2}}
+    exclude::Union{Nothing, Set{Int}} = nothing)::Dict{Int, Array{Int,2}}
 
     # initialize -
     frames = Dict{Int, Array{Int, 2}}(); # storage for the simulation frames
@@ -65,7 +70,7 @@ function _solve(agents::Array{MySimpleOneDimensionalAgentModel,1}, world::MyOneD
 
     # check: is the exclusion list defined?
     if (exclude === nothing)
-        exclude = Set{Int64}(); # initialize the exclusion list to empty if not defined
+        exclude = Set{Int}(); # initialize the exclusion list to empty if not defined
     end
 
     # iterate over time -
@@ -103,7 +108,7 @@ end
 
 function _solve(agents::Array{MySimpleTwoDimensionalAgentModel,1}, world::MyTwoDimensionalFixedBoundaryGridWorld;
     initial::Array{Int,2} = Array{Int,2}(), steps::Int=100, verbose::Bool=false, 
-    exclude::Union{Nothing, Set{Tuple{Int64,Int64}}} = nothing)::Dict{Int, Array{Int,2}}
+    exclude::Union{Nothing, Set{Tuple{Int,Int}}} = nothing)::Dict{Int, Array{Int,2}}
 
     # initialize -
     frames = Dict{Int, Array{Int, 2}}(); # storage for the simulation frames
@@ -115,7 +120,7 @@ function _solve(agents::Array{MySimpleTwoDimensionalAgentModel,1}, world::MyTwoD
 
     # check: is the exclusion list defined?
     if (exclude === nothing)
-        exclude = Set{Tuple{Int64,Int64}}(); # initialize the exclusion list to empty if not defined
+        exclude = Set{Tuple{Int,Int}}(); # initialize the exclusion list to empty if not defined
     end
 
     # iterate over time -
@@ -147,7 +152,7 @@ end
 
 function solve(agents::Array{T,1}, 
     world::AbstractWorldModel; initial::Array{Int,2}=Array{Int,2}(),
-    steps::Int = 100, verbose::Bool = false, exclude = nothing)::Dict{Int, Array{Int64,2}} where T<:AbstractAgentModel
+    steps::Int = 100, verbose::Bool = false, exclude = nothing)::Dict{Int, Array{Int,2}} where T<:AbstractAgentModel
 
     # call the appropriate function -
     return _solve(agents, world, initial = initial, steps = steps, 

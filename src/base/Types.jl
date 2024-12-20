@@ -23,8 +23,9 @@ mutable struct MyTotalisticWolframRuleModel <: AbstractPolicyModel
     index::Int
     radius::Int
     colors::Int
-    neighborhoodstatesmap::Dict{Float64, Int64}
+    neighborhoodstatesmap::Dict{Float64, Int}
     rule::Dict{Int, Int}
+    weights::Array{Float64,1}
 
     # constructor -
     MyTotalisticWolframRuleModel() = new();
